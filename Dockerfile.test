@@ -1,0 +1,8 @@
+FROM golang:1.9.5-alpine3.6
+
+RUN apk add -U git make bash coreutils ca-certificates
+
+ENV PATH=$PATH:/go/src/github.com/Azure/azure-container-networking
+
+WORKDIR /go/src/github.com/Azure/azure-container-networking
+CMD sh

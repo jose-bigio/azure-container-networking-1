@@ -59,6 +59,9 @@ BUILD_CONTAINER_NAME = acn-builder
 BUILD_CONTAINER_REPO_PATH = /go/src/github.com/Azure/azure-container-networking
 BUILD_USER ?= $(shell id -u)
 
+TEST_CONTAINER_IMAGE = test_container 
+TEST_CONTAINER_MOUNTS = -v $(CURDIR):/$(BUILD_CONTAINER_REPO_PATH)
+#
 # Target OS specific parameters.
 ifeq ($(GOOS),linux)
 	# Linux.
@@ -103,6 +106,14 @@ test: test-log test-store test-ipam test-cni test-cnm test-netlink test-cns test
 .PHONY: test-%
 test-%:
 	go test $*/
+
+.PHONY: test-build
+test-build:
+	docker build . -f Dockerfile.test -t $(TEST_CONTAINER_IMAGE)
+
+.PHONY: test-containerized
+test-containerized: test-build
+	docker run -it $(TEST_CONTAINER_MOUNTS) $(TEST_CONTAINER_IMAGE) make test
 
 # Build the Azure CNM plugin.
 $(CNM_BUILD_DIR)/azure-vnet-plugin$(EXE_EXT): $(CNMFILES)
