@@ -97,6 +97,13 @@ all-binaries: azure-cnm-plugin azure-cni-plugin azure-cns
 clean:
 	rm -rf $(OUTPUT_DIR)
 
+.PHONY: test
+test: test-log test-store test-ipam test-cni test-cnm test-netlink test-cns test-telemetry
+
+.PHONY: test-%
+test-%:
+	go test $*/
+
 # Build the Azure CNM plugin.
 $(CNM_BUILD_DIR)/azure-vnet-plugin$(EXE_EXT): $(CNMFILES)
 	go build -v -o $(CNM_BUILD_DIR)/azure-vnet-plugin$(EXE_EXT) -ldflags "-X main.version=$(VERSION) -s -w" $(CNM_DIR)/*.go
