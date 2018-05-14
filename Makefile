@@ -105,7 +105,7 @@ test: test-log test-store test-ipam test-cni test-cnm test-netlink test-cns test
 
 .PHONY: test-%
 test-%:
-	go test $*/
+	cd $* && go test 
 
 .PHONY: test-build
 test-build:
